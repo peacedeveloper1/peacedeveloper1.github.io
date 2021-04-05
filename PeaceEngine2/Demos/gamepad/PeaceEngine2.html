@@ -1,0 +1,33 @@
+<!doctypehtml><html lang=en-us>
+<head><meta charset=utf-8><meta content="text/html; charset=utf-8"http-equiv=Content-Type><title>PeaceEngine2</title><style>body{font-family:arial;margin:0;padding:none}.PeaceEngine2{padding-right:0;margin-left:auto;margin-right:auto;display:block}div.PeaceEngine2{text-align:center}div.PeaceEngine2_border{border:1px solid #000}canvas.PeaceEngine2{border:0 none;background-color:#000}#PeaceEngine2_logo{display:inline-block;margin:0}.spinner{height:30px;width:30px;margin:0;margin-top:20px;margin-left:20px;display:inline-block;vertical-align:top;-webkit-animation:rotation .8s linear infinite;-moz-animation:rotation .8s linear infinite;-o-animation:rotation .8s linear infinite;animation:rotation .8s linear infinite;border-left:5px solid #ebebeb;border-right:5px solid #ebebeb;border-bottom:5px solid #ebebeb;border-top:5px solid #787878;border-radius:100%;background-color:#bdd72e}@-webkit-keyframes rotation{from{-webkit-transform:rotate(0)}to{-webkit-transform:rotate(360deg)}}@-moz-keyframes rotation{from{-moz-transform:rotate(0)}to{-moz-transform:rotate(360deg)}}@-o-keyframes rotation{from{-o-transform:rotate(0)}to{-o-transform:rotate(360deg)}}@keyframes rotation{from{transform:rotate(0)}to{transform:rotate(360deg)}}#status{display:inline-block;vertical-align:top;margin-top:30px;margin-left:20px;font-weight:700;color:#787878}#progress{height:20px;width:300px}#controls{display:inline-block;float:right;vertical-align:top;margin-top:30px;margin-right:20px}#output{width:100%;height:200px;margin:0 auto;margin-top:10px;border-left:0;border-right:0;padding-left:0;padding-right:0;display:block;background-color:#000;color:#fff;font-family:'Lucida Console',Monaco,monospace;outline:0}</style>
+<meta property="og:title" content="PeaceEngine2 Demo">
+<meta property="og:description" content="PeaceEngine2 - Lightweight high performance and easy to use 2D game engine">
+<meta property="og:image" content="https://peacedeveloper1.github.io/PeaceEngine2/Demos/gamepad/PeaceEngine2-00079.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PeaceEngine2 Demo ">
+<meta name="twitter:description" content="PeaceEngine2 - Lightweight high performance and easy to use 2D game engine">
+<meta name="twitter:image" content="https://peacedeveloper1.github.io/PeaceEngine2/Demos/gamepad/PeaceEngine2-00079.png">
+
+<link rel="stylesheet" href="/css/style.css">
+</head><body>
+
+<div><h1><center>PeaceEngine2 Demo</center></h1></div>
+
+<div class=spinner id=spinner></div><div class=PeaceEngine2 id=status>Downloading...</div>
+
+
+<div class=PeaceEngine2><progress hidden id=progress max=100 value=0></progress></div><div class=PeaceEngine2_border><canvas class=PeaceEngine2 id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas></div><textarea id=output rows=8></textarea><script>var statusElement=document.getElementById("status"),progressElement=document.getElementById("progress"),spinnerElement=document.getElementById("spinner"),Module={preRun:[],postRun:[],print:function(){var e=document.getElementById("output");return e&&(e.value=""),function(t){arguments.length>1&&(t=Array.prototype.slice.call(arguments).join(" ")),console.log(t),e&&(e.value+=t+"\n",e.scrollTop=e.scrollHeight)}}(),printErr:function(e){arguments.length>1&&(e=Array.prototype.slice.call(arguments).join(" ")),console.error(e)},canvas:function(){var e=document.getElementById("canvas");return e.addEventListener("webglcontextlost",(function(e){alert("WebGL context lost. You will need to reload the page."),e.preventDefault()}),!1),e}(),setStatus:function(e){if(Module.setStatus.last||(Module.setStatus.last={time:Date.now(),text:""}),e!==Module.setStatus.last.text){var t=e.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/),n=Date.now();t&&n-Module.setStatus.last.time<30||(Module.setStatus.last.time=n,Module.setStatus.last.text=e,t?(e=t[1],progressElement.value=100*parseInt(t[2]),progressElement.max=100*parseInt(t[4]),progressElement.hidden=!1,spinnerElement.hidden=!1):(progressElement.value=null,progressElement.max=null,progressElement.hidden=!0,e||(spinnerElement.style.display="none")),statusElement.innerHTML=e)}},totalDependencies:0,monitorRunDependencies:function(e){this.totalDependencies=Math.max(this.totalDependencies,e),Module.setStatus(e?"Preparing... ("+(this.totalDependencies-e)+"/"+this.totalDependencies+")":"All downloads complete.")}};Module.setStatus("Downloading..."),window.onerror=function(e){Module.setStatus("Exception thrown, see JavaScript console"),spinnerElement.style.display="none",Module.setStatus=function(e){e&&Module.printErr("[post-exception status] "+e)}}</script><script async src=PeaceEngine2.js></script>
+
+    <script>
+    
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-38408313-4', 'auto');
+    ga('send', 'pageview');
+
+    </script>
+
+</body></html>
