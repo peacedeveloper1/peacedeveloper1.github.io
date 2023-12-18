@@ -1,4 +1,4 @@
-//EakAstro.js 
+//EakAstro.js  
 //peacedeveloper[@]gmail.com
 //discord: https://discord.gg/7BgWehus3d
 //facebook: Eak Astro หมอเอกสแกนดวง
