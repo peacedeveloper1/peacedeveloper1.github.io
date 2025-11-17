@@ -1,9 +1,14 @@
 // demo_ui_app.rjs
 // UI demo: sortable/filterable project table + tag-based gallery
-// ใช้ RJS sugar: ::, :=, fn, if/else, for, log (แต่ไม่เขียน const/let ตรง ๆ)
-
-// ---------- Data ----------
-
+/*!
+ * RJS - Revolution JavaScript
+ * © Peacedeveloper. All rights reserved.
+ * https://peacedeveloper1.github.io/rjs/
+ * peacedeveloper@gmail.com
+ * This file is part of the RJS language and loader.
+ * Unauthorized copying, modification, or distribution is prohibited.
+ */
+ 
 // ---------- Data ----------
 
 projects :: [<
@@ -342,5 +347,4 @@ fn init()
   renderGallery()
 end
 
-// เรียกตรง ๆ (ตอนนี้ script ถูกโหลดหลัง DOM แล้ว)
 init()
