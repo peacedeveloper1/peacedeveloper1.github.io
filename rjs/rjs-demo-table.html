@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RJS UI Demo – Sortable & Filterable</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light;
+
+      --bg: #f3f4f6;
+      --bg-elevated: #ffffff;
+      --card: #ffffff;
+      --card-border: rgba(148, 163, 184, 0.6);
+      --fg: #0f172a;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.08);
+      --danger: #b91c1c;
+      --success: #15803d;
+      --warning: #b45309;
+      --radius-lg: 16px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 16px 40px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--fg);
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.07), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.06), transparent 55%),
+        var(--bg);
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1120px;
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent), transparent);
+    }
+
+    h1 {
+      margin: 12px 0 6px;
+      font-size: 26px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.03), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.03), transparent 55%),
+        var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-description {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .search-input {
+      flex: 1 1 180px;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border-radius: var(--radius-pill);
+      padding: 4px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+    }
+
+    .search-input input {
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--fg);
+      font-size: 13px;
+      width: 100%;
+    }
+
+    .search-input input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-icon {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .segmented {
+      display: inline-flex;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: #ffffff;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .segmented button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 5px 9px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .segmented button.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .segmented button .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.9);
+    }
+
+    .segmented button.is-active .dot {
+      background: var(--accent);
+    }
+
+    .table-wrapper {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead {
+      background: #f9fafb;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(209, 213, 219, 0.9);
+    }
+
+    thead th {
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      user-select: none;
+      cursor: default;
+      white-space: nowrap;
+    }
+
+    th[data-sort-key] {
+      cursor: pointer;
+    }
+
+    th[data-sort-key]:hover {
+      background: #eef2ff;
+    }
+
+    .sort-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sort-indicator {
+      font-size: 10px;
+      opacity: 0.9;
+      min-width: 10px;
+      text-align: center;
+    }
+
+    .is-sorted-asc,
+    .is-sorted-desc {
+      color: var(--accent);
+    }
+
+    tbody tr:hover {
+      background: #f1f5f9;
+    }
+
+    .cell-main {
+      max-width: 260px;
+    }
+
+    .cell-title {
+      font-size: 13px;
+    }
+
+    .cell-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .status-pill {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: #f9fafb;
+      color: var(--muted);
+    }
+
+    .status-active {
+      border-color: rgba(59, 130, 246, 0.9);
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+
+    .status-paused {
+      border-color: rgba(234, 179, 8, 0.9);
+      color: var(--warning);
+      background: #fffbeb;
+    }
+
+    .status-completed {
+      border-color: rgba(22, 163, 74, 0.9);
+      color: var(--success);
+      background: #ecfdf3;
+    }
+
+    .priority-high {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    .priority-low {
+      color: var(--muted);
+    }
+
+    .gallery-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill {
+      border: none;
+      background: #ffffff;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      font-size: 11px;
+      padding: 5px 9px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.08s ease;
+    }
+
+    .pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.9);
+    }
+
+    .pill.is-active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .pill.is-active .dot {
+      background: var(--accent);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .gallery-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .gallery-card {
+      position: relative;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #ffffff;
+      padding: 10px 10px 12px;
+      overflow: hidden;
+      transition: box-shadow 0.16s ease, transform 0.08s ease;
+    }
+
+    .gallery-card:hover {
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .gallery-thumb {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.9), rgba(59, 130, 246, 0.7));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #eff6ff;
+      margin-bottom: 6px;
+    }
+
+    .gallery-card h3 {
+      font-size: 13px;
+      margin: 0 0 4px;
+    }
+
+    .gallery-meta {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .gallery-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag-pill {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: var(--radius-pill);
+      background: #f9fafb;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: var(--muted);
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hint span {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="page-header">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        RJS v0.3.1 UI Playground
+      </div>
+      <h1>Dashboard Widgets in 1 RJS File</h1>
+      <p class="subtitle">
+        Sort / filter / search table + tag-based gallery - demo 
+      </p>
+    </header>
+
+    <section class="grid">
+      <!-- Left: Project table -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Project Overview</div>
+            <div class="card-description">
+              Click on header for sort,  filter , search by keyword
+            </div>
+          </div>
+          <div class="chip">
+            <span>RJS</span> wired table
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <label class="search-input">
+            <span class="search-icon">⌕</span>
+            <input
+              id="projectSearch"
+              type="search"
+              placeholder="Search by name, owner, category..."
+              autocomplete="off"
+            />
+          </label>
+
+          <div class="segmented" aria-label="Filter by status">
+            <button type="button" data-status-filter="all" class="is-active">
+              <span class="dot"></span>
+              All
+            </button>
+            <button type="button" data-status-filter="Active">
+              <span class="dot"></span>
+              Active
+            </button>
+            <button type="button" data-status-filter="Paused">
+              <span class="dot"></span>
+              Paused
+            </button>
+            <button type="button" data-status-filter="Completed">
+              <span class="dot"></span>
+              Done
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th data-sort-key="name">
+                  <span class="sort-label">
+                    Project
+                    <span class="sort-indicator"></span>
+                  </span>
+                </th>
+                <th data-sort-key="owner">
+                  <span class="sort-label">
+                    Owner
+                    <span class="sort-indicator"></span>
+                  </span>
+                </th>
+                <th data-sort-key="status">
+                  <span class="sort-label">
+                    Status
+                    <span class="sort-indicator"></span>
+                  </span>
+                </th>
+                <th data-sort-key="priority">
+                  <span class="sort-label">
+                    Priority
+                    <span class="sort-indicator"></span>
+                  </span>
+                </th>
+                <th data-sort-key="updated">
+                  <span class="sort-label">
+                    Updated
+                    <span class="sort-indicator"></span>
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="projectTableBody">
+              <!-- filled by RJS -->
+            </tbody>
+          </table>
+        </div>
+
+        <p class="hint">
+          Logic and everthing (search / filter / sort) was inside <span>demo_ui_app.rjs</span> no framework used
+        </p>
+      </section>
+
+      <!-- Right: Gallery -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Pattern Gallery</div>
+            <div class="card-description">
+              Filter by tag to testing layout / component pattern 
+            </div>
+          </div>
+          <div class="chip">
+            <span>RJS</span> tag filter
+          </div>
+        </div>
+
+        <div class="gallery-toolbar">
+          <div class="pill-group" aria-label="Filter gallery by tag">
+            <button type="button" class="pill is-active" data-gallery-tag="all">
+              <span class="dot"></span>
+              All
+            </button>
+            <button type="button" class="pill" data-gallery-tag="analytics">
+              <span class="dot"></span>
+              Analytics
+            </button>
+            <button type="button" class="pill" data-gallery-tag="marketing">
+              <span class="dot"></span>
+              Marketing
+            </button>
+            <button type="button" class="pill" data-gallery-tag="devtools">
+              <span class="dot"></span>
+              Dev tools
+            </button>
+            <button type="button" class="pill" data-gallery-tag="billing">
+              <span class="dot"></span>
+              Billing
+            </button>
+          </div>
+        </div>
+
+        <div id="galleryGrid" class="gallery-grid">
+          <!-- filled by RJS -->
+        </div>
+
+        <p class="hint">
+          try to change dataset / tag in <span>demo_ui_app.rjs</span> as design playground for dashboard
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <script src="rjs-compiler.min.js"></script>
+  <script>
+    // โหลด RJS UI logic
+    RJS.load("demo_ui_app.rjs");
+  </script>
+</body>
+</html>
